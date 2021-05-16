@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - T_Enemy
   layers:
   - Default
   - TransparentFX
@@ -13,8 +14,8 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
+  - L_Ground
+  - L_Enemy
   - 
   - 
   - 
@@ -40,4 +41,16 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: S_Background
+    uniqueID: 3996021215
+    locked: 0
+  - name: S_Platform
+    uniqueID: 1069467427
+    locked: 0
+  - name: S_Character
+    uniqueID: 1481049081
+    locked: 0
+  - name: S_Item
+    uniqueID: 124757735
     locked: 0

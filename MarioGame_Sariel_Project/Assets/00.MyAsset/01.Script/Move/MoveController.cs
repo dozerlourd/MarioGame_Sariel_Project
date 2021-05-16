@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class MoveController : MonoBehaviour
 {
-    [SerializeField] float moveSpeed;
+    [SerializeField] protected float moveSpeed;
     protected abstract void Move();
 
     protected abstract void VelocityZero();
