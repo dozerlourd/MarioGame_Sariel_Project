@@ -35,10 +35,11 @@ public class PlayerHP : HPController
 
     public override void OnDamaged(Vector2 targetPos)
     {
-        if (CurrentHP > 0)
+        TakeDamage = 1;
+
+        if (CurrentHP >= 1)
         {
             Debug.Log("1");
-            TakeDamage = 1;
             //Change Layer
             gameObject.layer = 11;
 
@@ -54,13 +55,12 @@ public class PlayerHP : HPController
 
             Invoke("OffDamaged", 1);
         }
-        else if(CurrentHP == 0)
+        else
         {
             Debug.Log("0");
             //Sprite Alpha
-            PlayerSystem.Instance.SpriteRenderer.color = new Color(1, 1, 1, 0.4f);
-            //Sprite Flip Y
-            PlayerSystem.Instance.SpriteRenderer.flipY = true;
+            //PlayerSystem.Instance.SpriteRenderer.color = new Color(1, 1, 1, 0.4f);
+            PlayerSystem.Instance.Animator.SetBool("IsDie",true);
             //Collider Disable
             PlayerSystem.Instance.Collider2D.enabled = false;
             //Die Effect Jump

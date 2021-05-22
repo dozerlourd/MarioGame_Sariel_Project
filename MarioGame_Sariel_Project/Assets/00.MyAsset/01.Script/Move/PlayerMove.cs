@@ -11,6 +11,7 @@ public class PlayerMove : MoveController
 
     float velocityLerpTemp = 0f;
     float jumpTimer = 0f;
+    [SerializeField] float maxJumpTimer = 0.3f;
 
     [SerializeField] bool isGround = true;
 
@@ -28,21 +29,21 @@ public class PlayerMove : MoveController
         if(PlayerSystem.Instance.PlayerHP.CurrentHP > 0)
         {
             Move();
-            if (Input.GetButtonDown("Jump") && isGround) Jump();
-            if (Input.GetButtonUp("Jump")) jumpTimer = 0f;
+            if (Input.GetButton("Jump") && isGround) Jump();
+            if (Input.GetButtonUp("Jump")) { isGround = true; jumpTimer = 0; }
         }
     }
 
     protected override void Move()
     {
-        CheckLandingPlatform();
+        CheckingPlatform();
         //밑 함수의 h 벡터값 정의
         float h = Input.GetAxis("Horizontal");
 
         //워킹 함수
         if (Input.GetAxisRaw("Horizontal") != 0)
         {
-            rigid.AddForce(Vector2.right * h * moveSpeed, ForceMode2D.Impulse);
+            rigid.velocity = new Vector2(h * moveSpeed, rigid.velocity.y);
             if (velocityLerpTemp != 0) velocityLerpTemp = 0f;
         }
         else
@@ -52,6 +53,8 @@ public class PlayerMove : MoveController
 
         Flip(h);
         LimitVelocity();
+
+
     }
 
     private void Flip(float h)
@@ -70,19 +73,21 @@ public class PlayerMove : MoveController
     {
         jumpTimer += Time.deltaTime;
 
-        if(jumpTimer <= 0.2f)
-        //점프 함수;
-        rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
+        if (jumpTimer <= maxJumpTimer)
+        {
+            //점프 함수;
+            //rigid.AddForce(Vector2.up * jumpPower * Time.deltaTime, ForceMode2D.Impulse);
+            rigid.velocity = Vector2.up * jumpPower;
+        }
+        else { isGround = false; }
+            
     }
 
-    protected override void AccelerateSpeed()
-    {
-        rigid = GetComponent<Rigidbody2D>();
-    }
+    protected override void AccelerateSpeed() { }
 
     protected override void VelocityZero()
     {
-        velocityLerpTemp += Time.deltaTime;
+        velocityLerpTemp += Time.deltaTime * 5;
         rigid.velocity = new Vector2(Mathf.Lerp(rigid.velocity.x, 0, velocityLerpTemp * zeroSpeedRate), rigid.velocity.y);
     }
 
@@ -99,20 +104,13 @@ public class PlayerMove : MoveController
         }
     }
 
-    void CheckLandingPlatform()
+    void CheckingPlatform()
     {
         //레이캐스트 빔 디버깅
-        //Debug.DrawRay(rigid.position, Vector3.down, new Color(0,1,0));
+        Debug.DrawRay(new Vector2(rigid.position.x - 0.075f, rigid.position.y - 0.1f), Vector3.right * 0.15f, Color.red);
         //랜딩 플랫폼
-        RaycastHit2D rayHit = Physics2D.Raycast(rigid.position, Vector3.down, groundCheckDist, LayerMask.GetMask("L_Ground"));
+        RaycastHit2D rayHit = Physics2D.Raycast(new Vector2(rigid.position.x - 0.075f, rigid.position.y - 0.1f), Vector3.right, groundCheckDist, LayerMask.GetMask("L_Ground"));
 
-        if (rayHit.collider != null)
-        {
-            isGround = true;
-        }
-        else
-        {
-            isGround = false;
-        }
+        isGround = rayHit.collider ? true : false;
     }
 }

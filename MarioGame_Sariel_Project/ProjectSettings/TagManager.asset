@@ -45,7 +45,7 @@ TagManager:
   - name: S_Background
     uniqueID: 3996021215
     locked: 0
-  - name: S_Platform
+  - name: S_Block
     uniqueID: 1069467427
     locked: 0
   - name: S_Character
